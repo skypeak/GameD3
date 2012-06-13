@@ -36,6 +36,57 @@ namespace Mooege.Core.GS.Generators
     {
         static readonly Logger Logger = LogManager.CreateLogger();
 
+        // Hardcoded world generate to load first scene in new tristram on top of hill
+        public static World Generate(Game game)
+        {
+            var world = new World(game, 71150);
+
+            var scene = new Scene(world, new Vector3D(0, 0, 0), 33349, null)
+            {
+                MiniMapVisibility = true,
+                SceneGroupSNO = -1,
+                Specification = new SceneSpecification
+                {
+                    CellZ = 0,
+                    Cell = new Vector2D{ X = 51, Y = 46 },
+                    SNOLevelAreas = new int[] { 0x00004DEB, 0x00026186, -1, -1 },
+                    SNOPrevWorld = -1,
+                    Unknown1 = 0,
+                    SNOPrevLevelArea = -1,
+                    SNONextWorld = -1,
+                    Unknown2 = 0,
+                    SNONextLevelArea = -1,
+                    SNOMusic = 0x000206F8,
+                    SNOCombatMusic = -1,
+                    SNOAmbient = 0x0002734F,
+                    SNOReverb = 0x000375D0,
+                    SNOWeather = 0x00013220,
+                    SNOPresetWorld = 0x000115EE,
+                    Unknown3 = -1,
+                    Unknown4 = -1,
+                    Unknown5 = 0,
+                    ClusterID = -1,
+                    SceneCachedValues = new SceneCachedValues
+                    {
+                        Unknown1 = 63,
+                        Unknown2 = 96,
+                        Unknown3 = 96,
+                        Unknown4 = new int[] { 0, 0x4C8, 0, 0 },
+                        Unknown5 = 9,
+                        AABB1 = new Common.Types.Collision.AABB { Max = new Vector3D { X = 115.9387f, Y = 125.2578f, Z = 43.82879f }, Min = new Vector3D { X = 124.0615f, Y = 131.6655f, Z = 57.26923f } },
+                        AABB2 = new Common.Types.Collision.AABB { Max = new Vector3D { X = 115.9387f, Y = 125.2578f, Z = 43.82879f }, Min = new Vector3D { X = 124.0615f, Y = 131.6655f, Z = 57.26923f } },
+                    },
+                },
+                RotationAxis = new Vector3D{ X = 0.0f, Y = 0.0f, Z = 0.0f },
+                RotationW = 1.0f,
+                Position = new Vector3D { X = 3060.0f, Y = 2760.0f, Z = 0.0f },
+            };
+
+            scene.LoadMarkers();
+
+            return world;
+        }
+
         public static World Generate(Game game, int worldSNO)
         {
             if (!MPQStorage.Data.Assets[SNOGroup.Worlds].ContainsKey(worldSNO))
@@ -43,6 +94,8 @@ namespace Mooege.Core.GS.Generators
                 Logger.Error("Can't find a valid world definition for sno: {0}", worldSNO);
                 return null;
             }
+            //call hardcoded new tristram world
+            return Generate(game);
 
             var worldAsset = MPQStorage.Data.Assets[SNOGroup.Worlds][worldSNO];
             var worldData = (Mooege.Common.MPQ.FileFormats.World)worldAsset.Data;
@@ -118,7 +171,7 @@ namespace Mooege.Core.GS.Generators
                     RotationAxis = sceneChunk.PRTransform.Quaternion.Vector3D,
                     SceneGroupSNO = -1
                 };
-               
+
                 // If the scene has a subscene (cluster ID is set), choose a random subscenes from the cluster load it and attach it to parent scene /farmy
                 if (sceneChunk.SceneSpecification.ClusterID != -1)
                 {
@@ -442,7 +495,7 @@ namespace Mooege.Core.GS.Generators
             exitTypes.Add(TileExits.North, positionNorth);
             exitTypes.Add(TileExits.South, positionSouth);
 
-            if(!isRandom)
+            if (!isRandom)
                 return exitTypes;
 
             //randomize
@@ -707,7 +760,7 @@ namespace Mooege.Core.GS.Generators
                                     // Adventure are basically made up of a markerSet that has relative PRTransforms
                                     // it has some other fields that are always 0 and a reference to a symbol actor
                                     // no idea what they are used for - farmy
-                                    
+
                                     var adventure = spawnEntry.SNOHandle.Target as Adventure;
                                     var markerSet = new SNOHandle(adventure.SNOMarkerSet).Target as MarkerSet;
 
@@ -776,7 +829,7 @@ namespace Mooege.Core.GS.Generators
                             if ((scene.NavMesh.Squares[y * scene.NavMesh.SquaresCountX + x].Flags & Mooege.Common.MPQ.FileFormats.Scene.NavCellFlags.NoSpawn) == 0)
                             {
                                 loadActor(
-                                    new SNOHandle(monsterActors[RandomHelper.Next(monsterActors.Length)]), 
+                                    new SNOHandle(monsterActors[RandomHelper.Next(monsterActors.Length)]),
                                     new PRTransform
                                     {
                                         Vector3D = new Vector3D

@@ -28,7 +28,7 @@ using Mooege.Net.MooNet;
 namespace Mooege.Core.MooNet.Services
 {
     [Service(serviceID: 0x6, serviceName: "bnet.protocol.friends.FriendsService")]
-    public class FriendsService : bnet.protocol.friends.FriendsService,IServerService
+    public class FriendsService : bnet.protocol.friends.FriendsService, IServerService
     {
         private static readonly Logger Logger = LogManager.CreateLogger();
         public MooNetClient Client { get; set; }
@@ -38,6 +38,9 @@ namespace Mooege.Core.MooNet.Services
         public override void SubscribeToFriends(IRpcController controller, bnet.protocol.friends.SubscribeToFriendsRequest request, Action<bnet.protocol.friends.SubscribeToFriendsResponse> done)
         {
             Logger.Trace("Subscribe() {0}", this.Client);
+
+            //FIXME: This causes an exception with the retail client /raist.
+
 
             FriendManager.Instance.AddSubscriber(this.Client, request.ObjectId);
 

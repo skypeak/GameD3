@@ -161,7 +161,6 @@ namespace Mooege.Core.MooNet.Toons
         /// <summary>
         /// Toon's flags.
         /// </summary>
-        private ToonFlags _flags;
         public ToonFlags Flags
         {
             get
@@ -337,13 +336,13 @@ namespace Mooege.Core.MooNet.Toons
             : base(dbToon.Id)
         {
             this.D3EntityID = D3.OnlineService.EntityId.CreateBuilder().SetIdHigh((ulong)EntityIdHelper.HighIdType.ToonId).SetIdLow(this.PersistentID).Build();
-            
+
             this.DBToon = dbToon;
             this.HeroTable = HeroData.Heros.Find(item => item.Name == this.Class.ToString());
             this.ExperienceNext = Player.LevelBorders[this.Level];
 
             var visualItems = new[]
-            {                                
+            {
                 D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Head
                 D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Chest
                 D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Feet
@@ -354,12 +353,11 @@ namespace Mooege.Core.MooNet.Toons
                 D3.Hero.VisualItem.CreateBuilder().SetEffectLevel(0).Build(), // Legs
             };
 
-
             // Load Visual Equipment
             var visualToSlotMapping = new Dictionary<int, int> { { 1, 0 }, { 2, 1 }, { 7, 2 }, { 5, 3 }, { 4, 4 }, { 3, 5 }, { 8, 6 }, { 9, 7 } };
 
             //add visual equipment from DB, only the visualizable equipment, not everything
-            var visibleEquipment = DBSessions.AccountSession.Query<DBInventory>().Where(inv => inv.DBItemInstance!=null && inv.DBToon.Id == dbToon.Id && inv.EquipmentSlot != -1).ToList();
+            var visibleEquipment = DBSessions.AccountSession.Query<DBInventory>().Where(inv => inv.DBItemInstance != null && inv.DBToon.Id == dbToon.Id && inv.EquipmentSlot != -1).ToList();
 
             foreach (var inv in visibleEquipment)
             {
@@ -376,12 +374,9 @@ namespace Mooege.Core.MooNet.Toons
             }
 
             this.HeroVisualEquipmentField.Value = D3.Hero.VisualEquipment.CreateBuilder().AddRangeVisualItem(visualItems).Build();
-
-
-
-
         }
-        /*
+
+        /* old non-db toon creation ctor. /raist.
         public Toon(string name, int hashCode, int classId, ToonFlags flags, byte level, GameAccount account) // Toon with **newly generated** persistent ID
             : base(StringHashHelper.HashIdentity(name + "#" + hashCode.ToString("D3")))
         {
@@ -558,7 +553,7 @@ namespace Mooege.Core.MooNet.Toons
     public enum ToonClass// : uint
     {
         Barbarian,// = 0x4FB91EE2,
-        Monk ,//= 0x3DAC15,
+        Monk,//= 0x3DAC15,
         DemonHunter,// = 0xC88B9649,
         WitchDoctor,// = 0x343C22A,
         Wizard,// = 0x1D4681B1

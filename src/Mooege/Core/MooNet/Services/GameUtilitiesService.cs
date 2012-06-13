@@ -129,7 +129,6 @@ namespace Mooege.Core.MooNet.Services
                         attr.SetValue(bnet.protocol.attribute.Variant.CreateBuilder().SetMessageValue(DeletedHero).Build());
                     else
                         this.Status = 395003;
-                    //LastCallHeader = LastCallHeader.ToBuilder().SetStatus(395003).Build();
                     break;
                 default:
                     Logger.Warn("Unknown CustomMessageId {0}: {1}", MessageId, request.AttributeCount > 2 ? request.GetAttribute(2).Value.ToString() : "No CustomMessage?");
@@ -233,11 +232,11 @@ namespace Mooege.Core.MooNet.Services
         {
             var oldToon = this.Client.Account.CurrentGameAccount.CurrentToon;
             var newtoon = ToonManager.GetToonByLowID(hero.IdLow);
-            
+
 
             Logger.Trace("SelectToon() {0}", this.Client.Account.CurrentGameAccount.CurrentToon);
 
-            if (oldToon!=newtoon)
+            if (oldToon != newtoon)
             {
                 this.Client.Account.CurrentGameAccount.CurrentToon = newtoon;
                 this.Client.Account.CurrentGameAccount.NotifyUpdate();
