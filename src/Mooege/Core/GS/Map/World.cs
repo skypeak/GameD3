@@ -337,7 +337,7 @@ namespace Mooege.Core.GS.Map
         public void SpawnMonster(int monsterSNOId, Vector3D position)
         {
             var monster = ActorFactory.Create(this, monsterSNOId, new TagMap());
-            monster.Scale = 1.35f;
+            //monster.Scale = 1.35f; // this shoudln't be here
             monster.EnterWorld(position);
         }
 
@@ -377,6 +377,55 @@ namespace Mooege.Core.GS.Map
             // TODO: Gold should be spawned for all players in range. /raist.
             var item = ItemGenerator.CreateGold(player, RandomHelper.Next(1000, 3000)); // somehow the actual ammount is not shown on ground /raist.
             DropItem(source, player, item);
+        }
+
+        /// <summary>
+        /// Returns the first actor found with a given sno id
+        /// </summary>
+        /// <param name="sno"></param>
+        /// <returns></returns>
+        public Actor GetActorBySNO(int sno)
+        {
+            foreach (var actor in this._actors.Values)
+            {
+                if (actor.ActorSNO.Id == sno)
+                    return actor;
+            } return null;
+        }
+
+        /// <summary>
+        /// Returns true if any actors exist under a well defined group
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public bool HasActorsInGroup(string group)
+        {
+            var groupHash = Mooege.Common.Helpers.Hash.StringHashHelper.HashItemName(group);
+            foreach (var actor in this._actors.Values)
+            {
+                if (actor.Tags != null)
+                    if (actor.Tags.ContainsKey(MarkerKeys.Group1Hash))
+                        if (actor.Tags[MarkerKeys.Group1Hash] == groupHash) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns all actors matching a group
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public List<Actor> GetActorsInGroup(string group)
+        {
+            List<Actor> matchingActors = new List<Actor>();
+            var groupHash = Mooege.Common.Helpers.Hash.StringHashHelper.HashItemName(group);
+            foreach (var actor in this._actors.Values)
+            {
+                if (actor.Tags != null)
+                    if (actor.Tags.ContainsKey(MarkerKeys.Group1Hash))
+                        if (actor.Tags[MarkerKeys.Group1Hash] == groupHash) matchingActors.Add(actor);
+            }
+            return matchingActors;
         }
 
         /// <summary>

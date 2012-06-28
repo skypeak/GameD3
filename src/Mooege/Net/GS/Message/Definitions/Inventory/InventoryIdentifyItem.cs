@@ -20,8 +20,8 @@ using System.Text;
 
 namespace Mooege.Net.GS.Message.Definitions.Inventory
 {
-    [Message(Opcodes.DropItemMessage, Consumers.Inventory)]
-    public class InventoryDropItemMessage : GameMessage
+    [Message(Opcodes.IdentifyItemMessage, Consumers.Inventory)]
+    public class InventoryIdentifyItemMessage : GameMessage
     {
         public uint ItemID; // Item's DynamicID
         //TODO: find out about unknown data
@@ -40,7 +40,7 @@ namespace Mooege.Net.GS.Message.Definitions.Inventory
         public override void AsText(StringBuilder b, int pad)
         {
             b.Append(' ', pad);
-            b.AppendLine("InventoryDropItemMessage:");
+            b.AppendLine("InventoryIdentifyItemMessage:");
             b.Append(' ', pad++);
             b.AppendLine("{");
             b.Append(' ', pad); b.AppendLine("ItemID: 0x" + ItemID.ToString("X8"));
