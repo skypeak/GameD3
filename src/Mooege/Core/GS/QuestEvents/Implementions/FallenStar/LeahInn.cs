@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Mooege.Core.GS.QuestEvents.Implementations
 {
-    class _151123 : QuestEvent
+    class LeahInn : QuestEvent
     {
         //ActorID: 0x7A3100DD  
         //ZombieSkinny_A_LeahInn.acr (2050031837)
@@ -38,7 +38,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
 
         private static readonly Logger Logger = LogManager.CreateLogger();
 
-        public _151123()
+        public LeahInn()
             : base(151123)
         {
         }
@@ -49,7 +49,7 @@ namespace Mooege.Core.GS.QuestEvents.Implementations
         public override void Execute(Map.World world)
         {
             StartConversation(world, 204113);
-
+            world.Game.Quests.Advance(87700);
             var transformActors = Task<bool>.Factory.StartNew(() => HoudiniVsZombies(world, 204605));
             transformActors.Wait();
             var zombieWave = Task<bool>.Factory.StartNew(() => LaunchWave(ActorsVector3D, world, 203121));
