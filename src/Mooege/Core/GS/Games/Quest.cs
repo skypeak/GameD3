@@ -50,7 +50,7 @@ namespace Mooege.Core.GS.Games
                 public int ObjectiveValue { get { return objective.SNOName1.Id; } }
 
                 private Mooege.Common.MPQ.FileFormats.QuestStepObjective objective;
-                private QuestStep questStep;
+                public QuestStep questStep;
 
                 public QuestObjective(Mooege.Common.MPQ.FileFormats.QuestStepObjective objective, QuestStep questStep, int id)
                 {
