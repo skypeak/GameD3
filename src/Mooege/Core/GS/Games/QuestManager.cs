@@ -25,7 +25,7 @@ namespace Mooege.Core.GS.Games
 {
     public class QuestManager : QuestProgressHandler, IEnumerable<Quest>
     {
-        private Dictionary<int, Quest> quests = new Dictionary<int, Quest>();
+        public Dictionary<int, Quest> Quests = new Dictionary<int, Quest>();
         private static readonly Logger Logger = new Logger("QuestManager");
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Mooege.Core.GS.Games
         /// <returns></returns>
         public Quest this[int snoQuest]
         {
-            get { return quests[snoQuest]; }
+            get { return Quests[snoQuest]; }
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Mooege.Core.GS.Games
         {
             var asset = MPQStorage.Data.Assets[Common.Types.SNO.SNOGroup.Quest];
             foreach (var quest in asset.Keys)
-                quests.Add(quest, new Quest(game, quest));
+                Quests.Add(quest, new Quest(game, quest));
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Mooege.Core.GS.Games
         /// <param name="snoQuest">snoID of the quest to advance</param>
         public void Advance(int snoQuest)
         {
-            quests[snoQuest].Advance();
+            Quests[snoQuest].Advance();
         }
 
         /// <summary>
@@ -63,23 +63,28 @@ namespace Mooege.Core.GS.Games
         /// </summary>
         public void Notify(Mooege.Common.MPQ.FileFormats.QuestStepObjectiveType type, int value)
         {
-            foreach (var quest in quests.Values)
+            foreach (var quest in Quests.Values)
                 (quest as QuestProgressHandler).Notify(type, value);
         }
 
         public IEnumerator<Quest> GetEnumerator()
         {
-            return quests.Values.GetEnumerator();
+            return Quests.Values.GetEnumerator();
         }
 
 
         public bool HasCurrentQuest(int snoQuest, int Step)
         {
-            if (quests.ContainsKey(snoQuest))
-                if (quests[snoQuest].CurrentStep.QuestStepID == Step || Step == -1)
+            if (Quests.ContainsKey(snoQuest))
+                if (Quests[snoQuest].CurrentStep.QuestStepID == Step || Step == -1)
                     return true;
 
             return false;
+        }
+
+        public int CurrentQuest(int snoQuest)
+        {
+            return Quests[snoQuest].CurrentStep.QuestStepID;
         }
 
 
@@ -96,9 +101,9 @@ namespace Mooege.Core.GS.Games
                 started = true;
             else
             {
-                if (quests.ContainsKey(range.Start.SNOQuest))
+                if (Quests.ContainsKey(range.Start.SNOQuest))
                 {
-                    if (quests[range.Start.SNOQuest].HasStepCompleted(range.Start.StepID) || quests[range.Start.SNOQuest].CurrentStep.QuestStepID == range.Start.StepID) // rumford conversation needs current step
+                    if (Quests[range.Start.SNOQuest].HasStepCompleted(range.Start.StepID) || Quests[range.Start.SNOQuest].CurrentStep.QuestStepID == range.Start.StepID) // rumford conversation needs current step
                         started = true;
                 }
                 //else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.Start.SNOQuest);
@@ -108,9 +113,9 @@ namespace Mooege.Core.GS.Games
                 ended = false;
             else
             {
-                if (quests.ContainsKey(range.End.SNOQuest))
+                if (Quests.ContainsKey(range.End.SNOQuest))
                 {
-                    if (quests[range.End.SNOQuest].HasStepCompleted(range.End.StepID))
+                    if (Quests[range.End.SNOQuest].HasStepCompleted(range.End.StepID))
                         ended = true;
                 }
                 //else logger.Warn("QuestRange {0} references unknown quest {1}", range.Header.SNOId, range.End.SNOQuest);
